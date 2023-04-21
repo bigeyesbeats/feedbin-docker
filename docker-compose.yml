@@ -48,9 +48,9 @@ services:
       - EXTRACT_HOST
       - CAMO_HOST
     volumes:
-      - $PWD/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-      - feedbin_caddy_data:/data
-      - feedbin_caddy_config:/config
+      - /volume1/docker/caddy/caddyfile:/etc/caddy/Caddyfile:ro
+      - /volume1/docker/caddy/data:/data
+      - /volume1/docker/caddy/config:/config
     restart: unless-stopped
     depends_on:
       - feedbin-minio
@@ -67,7 +67,7 @@ services:
       - MINIO_ACCESS_KEY
       - MINIO_SECRET_KEY
     volumes:
-      - feedbin_minio:/data
+      - /volume1/docker/feedbin_minio:/data
     command: server /data
     restart: unless-stopped
     healthcheck:
@@ -205,7 +205,7 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
     volumes:
-      - feedbin_db:/var/lib/postgresql/data
+      - /volume1/docker/feedbin_db:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER"]
@@ -213,10 +213,10 @@ services:
       timeout: 20s
       retries: 3
 
-volumes:
-  feedbin_caddy_data:
-  feedbin_caddy_config:
-  feedbin_minio:
-  feedbin_elasticsearch:
-  feedbin_redis:
-  feedbin_db:
+# volumes:
+#   feedbin_caddy_data:
+#   feedbin_caddy_config:
+#   feedbin_minio:
+#   feedbin_elasticsearch:
+#   feedbin_redis:
+#   feedbin_db:
