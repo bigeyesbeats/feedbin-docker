@@ -39,8 +39,8 @@ services:
     image: caddy:alpine
     container_name: feedbin-caddy
     ports:
-      - 80:80
-      - 443:443
+      - 81:80
+      - 444:443
     environment:
       - FEEDBIN_HOST
       - FEEDBIN_API_HOST
