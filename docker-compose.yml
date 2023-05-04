@@ -63,6 +63,8 @@ services:
   feedbin-minio:
     image: minio/minio:latest
     container_name: feedbin-minio
+    ports:
+      - 9010:9000
     environment:
       - MINIO_ACCESS_KEY
       - MINIO_SECRET_KEY
@@ -71,7 +73,7 @@ services:
     command: server /data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ["CMD", "curl", "-f", "http://localhost:9010/minio/health/live"]
       interval: 30s
       timeout: 20s
       retries: 3
@@ -83,12 +85,12 @@ services:
       - feedbin-minio
     entrypoint: >
       /bin/sh -c "
-      /usr/bin/mc config host add minio http://feedbin-minio:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY;
+      /usr/bin/mc config host add minio http://feedbin-minio:9010 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY;
       /usr/bin/mc mb minio/$MINIO_BUCKET;
       /usr/bin/mc policy set download minio/$MINIO_BUCKET;
       exit 0;
       "
-
+#######
   feedbin-web:
     build:
       context: ./feedbin-web
