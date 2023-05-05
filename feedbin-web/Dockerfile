@@ -32,4 +32,4 @@ RUN apk add --no-cache \
 
 ENV RAILS_SERVE_STATIC_FILES=true
 
-EXPOSE 3000
+EXPOSE 3003

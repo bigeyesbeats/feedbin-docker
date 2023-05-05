@@ -48,9 +48,9 @@ services:
       - EXTRACT_HOST
       - CAMO_HOST
     volumes:
-      - /volume1/docker/caddy/caddyfile:/etc/caddy/Caddyfile:ro
-      - /volume1/docker/caddy/data:/data
-      - /volume1/docker/caddy/config:/config
+      - /volume1/docker/feedbin-docker/caddy/caddyfile:/etc/caddy/Caddyfile:ro
+      - /volume1/docker/feedbin-docker/caddy/data:/data
+      - /volume1/docker/feedbin-docker/caddy/config:/config
     restart: unless-stopped
     depends_on:
       - feedbin-minio
@@ -69,7 +69,7 @@ services:
       - MINIO_ACCESS_KEY
       - MINIO_SECRET_KEY
     volumes:
-      - /volume1/docker/feedbin_minio:/data
+      - /volume1/docker/feedbin-docker/feedbin_minio:/data
     command: server /data
     restart: unless-stopped
     healthcheck:
@@ -90,7 +90,7 @@ services:
       /usr/bin/mc policy set download minio/$MINIO_BUCKET;
       exit 0;
       "
-#######
+
   feedbin-web:
     build:
       context: ./feedbin-web
@@ -127,7 +127,7 @@ services:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
     volumes:
-      - feedbin_elasticsearch:/usr/share/elasticsearch/data
+      - /volume1/docker/feedbin-docker/feedbin_elasticsearch:/usr/share/elasticsearch/data
     ulimits:
       memlock:
         soft: -1
@@ -191,7 +191,7 @@ services:
     image: redis:6-alpine
     container_name: feedbin-redis
     volumes:
-      - feedbin_redis:/data
+      - /volume1/docker/feedbin-docker/feedbin-redis/data:/data
     command: "redis-server --appendonly yes"
     restart: unless-stopped
     healthcheck:
@@ -207,18 +207,10 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
     volumes:
-      - /volume1/docker/feedbin_db:/var/lib/postgresql/data
+      - /volume1/docker/feedbin-docker/feedbin_db:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER"]
       interval: 30s
       timeout: 20s
       retries: 3
-
-# volumes:
-#   feedbin_caddy_data:
-#   feedbin_caddy_config:
-#   feedbin_minio:
-#   feedbin_elasticsearch:
-#   feedbin_redis:
-#   feedbin_db:
